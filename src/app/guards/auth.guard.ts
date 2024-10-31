@@ -1,6 +1,6 @@
 // guards/auth.guard.ts
-import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { Router, type CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -11,7 +11,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Redirect to login page with return url
+  // Store the attempted URL for redirecting
   return router.createUrlTree(['/login'], {
     queryParams: { returnUrl: state.url },
   });
