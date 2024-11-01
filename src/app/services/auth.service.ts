@@ -12,6 +12,8 @@ export interface UserInfo {
 export interface AuthResponse {
   token: string;
   type: string;
+  username: string;
+  roles: string[];
 }
 
 @Injectable({
@@ -30,24 +32,19 @@ export class AuthService {
       'Authorization',
       `Basic ${credentials}`
     );
-    // Store the basic auth token temporarily
-    localStorage.setItem('token', credentials);
-    localStorage.setItem('authProvider', 'basic');
-    this.authProvider.set('basic');
 
-    // Make the authenticated request to get the user info
+    // Note: We're no longer storing the basic auth token
     return this.http
       .get<AuthResponse>(`${this.apiUrl}/auth/basic`, { headers })
       .pipe(
         tap({
           next: (response) => {
             if (response.token) {
-              // If the server returns a JWT, use that instead
+              // Store JWT token from response
               this.handleAuthSuccess(response.token, 'basic');
             }
           },
           error: () => {
-            // Clean up if authentication fails
             this.logout();
           },
         })
@@ -55,7 +52,6 @@ export class AuthService {
   }
 
   googleLogin(): void {
-    // Redirect to Google OAuth endpoint
     window.location.href = `${this.apiUrl}/auth/oauth2/authorize/google`;
   }
 
@@ -86,13 +82,11 @@ export class AuthService {
     return this.authProvider();
   }
 
-  // Method to check if the current route is public
   isPublicRoute(route: string): boolean {
     const publicRoutes = ['/login', '/auth/callback'];
     return publicRoutes.includes(route);
   }
 
-  // Refreshing user info after token change
   getUserInfo(): Observable<UserInfo> {
     return this.http.get<UserInfo>(`${this.apiUrl}/user/info`);
   }
