@@ -1,0 +1,39 @@
+<nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg">
+  <div class="container mx-auto px-4 py-3">
+    <div class="flex justify-between items-center">
+      <div class="flex space-x-8 items-center">
+        <a
+          routerLink="/home"
+          class="text-white text-lg font-semibold hover:text-blue-200 transition duration-150"
+        >
+          Home
+        </a>
+        <span> | </span>
+        <a
+          routerLink="/user"
+          class="text-white text-lg font-semibold hover:text-blue-200 transition duration-150"
+        >
+          Profile
+        </a>
+      </div>
+      <div>
+        <ng-container *ngIf="auth.isAuthenticated(); else loginLink">
+          <button
+            (click)="auth.logout()"
+            class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 transition duration-150"
+          >
+            Logout
+          </button>
+        </ng-container>
+        <ng-template #loginLink>
+          <a
+            routerLink="/login"
+            class="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 transition duration-150"
+          >
+            Login
+          </a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</nav>
